@@ -1,0 +1,58 @@
+name: Project
+options:
+  bundleIdPrefix: com.project
+  usesTabs: false
+  indentWidth: 2
+  tabWidth: 2
+  transitivelyLinkDependencies: true
+  deploymentTarget:
+    watchOS: 4.0
+  groupSortPosition: top
+  preGenCommand: echo "This is a pre-gen command"
+  postGenCommand: scripts/script.sh
+projectReferences:
+  AnotherProject:
+    path: ./AnotherProject/AnotherProject.xcodeproj
+  AnotherProject1:
+    path: ./AnotherProject-1/AnotherProject.xcodeproj
+  AnotherProject2:
+    path: ./AnotherProject-2/AnotherProject.xcodeproj
+  AnotherProject3:
+    path: ./AnotherProject-3/AnotherProject.xcodeproj
+targets:
+  App_iOS:
+    type: application
+    platform: iOS
+    attributes:
+      ProvisioningStyle: Automatic
+    sources:
+      - path: App_iOS
+        name: App
+        compilerFlags:
+          - "-Werror"
+    settings:
+      INFOPLIST_FILE: App_iOS/Info.plist
+      PRODUCT_BUNDLE_IDENTIFIER: com.project.app
+    dependencies:
+      - target: AnotherProject/ExternalTarget
+      - target: AnotherProject1/ExternalTarget
+      - target: AnotherProject2/ExternalTarget
+      - target: AnotherProject3/ExternalTarget
+
+    scheme:
+      testTargets:
+        - App_iOS_Tests
+      gatherCoverageData: true
+      disableMainThreadChecker: true
+      stopOnEveryMainThreadCheckerIssue: true
+
+  App_iOS_Tests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: App_iOS_Tests
+    dependencies:
+      - target: App_iOS
+      - target: AnotherProject/ExternalTarget
+      - target: AnotherProject1/ExternalTarget
+      - target: AnotherProject2/ExternalTarget
+      - target: AnotherProject3/ExternalTarget
